@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+#info {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+}
+
+.text {
+  display: flex;
+  justify-content: center;
+}
+
+.HW {
+  font-weight: bold;
+  color: wheat;
+  font-size: 100px;
+  margin-top: 150px;
+  border: 1px solid wheat;
+  max-width: 700px;
+  border-radius: 10px;
+}
