@@ -110,7 +110,7 @@ let mixer;
 
 const loader = new GLTFLoader();
 loader.load(
-  "./assets/car/scene.gltf",
+  "./assets/knight/scene.gltf",
   (gltf) => {
     const model = gltf.scene;
     scene.add(model);
