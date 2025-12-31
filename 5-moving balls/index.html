@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <title>Three.js Starter</title>
 
     <style>
@@ -11,6 +12,18 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+      }
+
+      h1 {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        z-index: 1;
+        user-select: none;
       }
 
       html,
@@ -29,6 +42,8 @@
   </head>
 
   <body>
+    <h1>Press Space to play - R to reload</h1>
+
     <!-- Three.js canvas gets injected here -->
     <script type="module" src="/main.js"></script>
   </body>

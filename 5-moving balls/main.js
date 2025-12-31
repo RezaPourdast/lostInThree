@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { all } from "three/tsl";
 
 /* ---------------------------------- */
 /* SIZES                              */
@@ -24,7 +25,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 1, 4);
+camera.position.set(1, 16, 0);
 scene.add(camera);
 
 /* ---------------------------------- */
@@ -76,13 +77,49 @@ scene.add(directionalLight);
 /* ---------------------------------- */
 /* TEST OBJECT (REMOVE LATER)          */
 /* ---------------------------------- */
-const mesh = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshStandardMaterial({ color: 0x00ff99 })
-);
-mesh.castShadow = true;
-mesh.receiveShadow = true;
-scene.add(mesh);
+
+let paused = true;
+
+const numBalls = 30;
+const radius = 1.3;
+function createBalls(numBalls) {
+  const mesh = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(radius, 1),
+    new THREE.MeshNormalMaterial({ flatShading: true })
+  );
+  let x = (Math.random() - 0.5) * 10;
+  let z = (Math.random() - 0.5) * 10;
+  mesh.position.set(x, 0, z);
+  mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+
+  const direction = new THREE.Vector3(0, 0, 0);
+  const Damping = 0.98;
+  const velocity = new THREE.Vector3(0, 0, 0);
+
+  function update(allBalls) {
+    mesh.position.add(velocity);
+    velocity.multiplyScalar(Damping);
+
+    allBalls.forEach((b) => {
+      const distance = mesh.position.distanceTo(b.mesh.position);
+      if (distance < radius * 2) {
+        direction.subVectors(mesh.position, b.mesh.position);
+        direction.normalize();
+        const force = (radius * 2 - distance) * 0.001;
+        velocity.addScaledVector(direction, force);
+      }
+    });
+  }
+  return { mesh, update };
+}
+
+const balls = [];
+
+for (let i = 0; i < numBalls; i++) {
+  const ball = createBalls();
+  scene.add(ball.mesh);
+  balls.push(ball);
+}
 
 /* ---------------------------------- */
 /* RESIZE                             */
@@ -108,8 +145,23 @@ function animate() {
 
   controls.update();
   renderer.render(scene, camera);
+  if (!paused) {
+    balls.forEach((ball) => ball.update(balls));
+  }
 
   requestAnimationFrame(animate);
 }
 
 animate();
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === " ") {
+    paused = !paused;
+  }
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key.toLowerCase() === "r") {
+    window.location.reload();
+  }
+});
